@@ -1,4 +1,4 @@
-package cn.zhouzy.remind.common;
+package cn.zhouzy.remind.common.constant;
 
 /**
  * 常量表

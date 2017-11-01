@@ -14,9 +14,14 @@ import cn.zhouzy.remind.R;
 public class BaseActivity extends Activity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }

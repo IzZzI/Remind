@@ -2,11 +2,9 @@ package cn.zhouzy.remind.base;
 
 import android.app.Application;
 
-import com.baidu.tts.client.SpeechError;
 import com.baidu.tts.client.SpeechSynthesizer;
-import com.baidu.tts.client.SpeechSynthesizerListener;
 
-import cn.zhouzy.remind.common.Constant;
+import cn.zhouzy.remind.common.constant.Constant;
 import cn.zhouzy.remind.mian.TTSSpeechSynthesizerListener;
 
 /**
