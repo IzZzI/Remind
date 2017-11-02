@@ -19,5 +19,12 @@
         android:layout_height="wrap_content"
         android:text="stop"
         />
+    <EditText
+        android:id="@+id/main_et_time_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="输入时间间隔"
+        android:inputType="number"
+        />
 
 </LinearLayout>

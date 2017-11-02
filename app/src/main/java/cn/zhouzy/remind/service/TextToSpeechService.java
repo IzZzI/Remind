@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import cn.zhouzy.remind.common.constant.Constant;
 import cn.zhouzy.remind.common.util.DateUtil;
+import cn.zhouzy.remind.entity.TTSMessage;
 import cn.zhouzy.remind.mian.TTSSpeechSynthesizerListener;
 import cn.zhouzy.remind.common.util.LogUtils;
 
@@ -40,7 +41,7 @@ public class TextToSpeechService extends Service {
     /**
      * 任务执行间隔周期
      */
-    private long mTaskPeriod = 1000;
+    private long mTaskPeriod = 5;
     /**
      * 定时器
      */
@@ -57,7 +58,7 @@ public class TextToSpeechService extends Service {
         super.onCreate();
         LogUtils.e("Service onCreate");
         EventBus.getDefault().register(this);
-//        initTTS();
+        initTTS();
 
 
     }
@@ -93,8 +94,9 @@ public class TextToSpeechService extends Service {
             public void run() {
                 String mCurrentTime = DateUtil.getCurrentDate("HH:mm:ss");
                 LogUtils.e(mCurrentTime);
+                mSpeechSynthesizer.speak("当前时间" + mCurrentTime);
             }
-        }, 1000, mTaskPeriod, TimeUnit.MILLISECONDS);
+        }, 1, mTaskPeriod, TimeUnit.SECONDS);
 
     }
 
@@ -103,7 +105,9 @@ public class TextToSpeechService extends Service {
      */
     public void stopTask() {
         LogUtils.e("stopTask");
-        exec.shutdown();
+        if (exec != null) {
+            exec.shutdown();
+        }
     }
 
     /**
@@ -112,12 +116,15 @@ public class TextToSpeechService extends Service {
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSettingChanged(String event) {
-        switch (event) {
-            case "0":
+    public void onSettingChanged(TTSMessage event) {
+        switch (event.getWhat()) {
+            case 0:
+                if (event.getPriod() != 0){
+                    mTaskPeriod = event.getPriod();
+                }
                 startTask();
                 break;
-            case "1":
+            case 1:
                 stopTask();
                 break;
             default:
@@ -183,6 +190,10 @@ public class TextToSpeechService extends Service {
         super.onDestroy();
         LogUtils.e("Service onDestroy");
         EventBus.getDefault().unregister(this);
+        if (exec != null){
+        	exec.shutdown();;
+        	exec = null;
+		}
     }
 
     @Override
