@@ -46,11 +46,14 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.main_btn_start})
+    @OnClick({R.id.main_btn_start, R.id.main_btn_stop})
     void onClick(View v){
         switch (v.getId()){
             case R.id.main_btn_start:
-                EventBus.getDefault().post("test");
+                EventBus.getDefault().post("0");
+                break;
+            case R.id.main_btn_stop:
+                EventBus.getDefault().post("1");
                 break;
             default:
                 break;
@@ -59,8 +62,8 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         //停止服务
         Intent in = new Intent(MainActivity.this, TextToSpeechService.class);
         stopService(in);

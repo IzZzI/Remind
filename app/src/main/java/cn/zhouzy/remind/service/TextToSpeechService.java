@@ -18,6 +18,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import cn.zhouzy.remind.common.constant.Constant;
+import cn.zhouzy.remind.common.util.DateUtil;
 import cn.zhouzy.remind.mian.TTSSpeechSynthesizerListener;
 import cn.zhouzy.remind.common.util.LogUtils;
 
@@ -39,18 +40,22 @@ public class TextToSpeechService extends Service {
     /**
      * 任务执行间隔周期
      */
-    private long period;
+    private long mTaskPeriod = 1000;
+    /**
+     * 定时器
+     */
+    private ScheduledThreadPoolExecutor exec;
 
     @Override
     public IBinder onBind(Intent intent) {
-        LogUtils.E("Service onBind");
+        LogUtils.e("Service onBind");
         return null;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtils.E("Service onCreate");
+        LogUtils.e("Service onCreate");
         EventBus.getDefault().register(this);
 //        initTTS();
 
@@ -72,25 +77,53 @@ public class TextToSpeechService extends Service {
 
     }
 
-    //开始执行任务
-    public void stratTask(){
-        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(2);
+    /**
+     * 开始执行任务
+     */
+    public void startTask() {
+
+
+        LogUtils.e("startTask");
+        if (exec != null) {
+            exec.shutdown();
+        }
+        exec = new ScheduledThreadPoolExecutor(2);
         exec.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                
+                String mCurrentTime = DateUtil.getCurrentDate("HH:mm:ss");
+                LogUtils.e(mCurrentTime);
             }
-        }, 1000, period, TimeUnit.MILLISECONDS);
+        }, 1000, mTaskPeriod, TimeUnit.MILLISECONDS);
 
     }
 
     /**
+     * 停止执行任务
+     */
+    public void stopTask() {
+        LogUtils.e("stopTask");
+        exec.shutdown();
+    }
+
+    /**
      * 设置改变后调用方法
+     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSettingChanged(String event){
-        LogUtils.E(event);
+    public void onSettingChanged(String event) {
+        switch (event) {
+            case "0":
+                startTask();
+                break;
+            case "1":
+                stopTask();
+                break;
+            default:
+                break;
+        }
+
     }
 
     /**
@@ -145,18 +178,16 @@ public class TextToSpeechService extends Service {
     }
 
 
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LogUtils.E("Service onDestroy");
+        LogUtils.e("Service onDestroy");
         EventBus.getDefault().unregister(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtils.E("Service onStartCommand");
+        LogUtils.e("Service onStartCommand");
         return super.onStartCommand(intent, flags, startId);
     }
 

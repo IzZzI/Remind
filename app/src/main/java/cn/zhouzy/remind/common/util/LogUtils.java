@@ -11,7 +11,7 @@ public class LogUtils {
 
     private static final String LOG_TAG = "zhouzy";
 
-    public static void E(String msg) {
+    public static void e(String msg) {
         Log.e(LOG_TAG, msg);
     }
 }
