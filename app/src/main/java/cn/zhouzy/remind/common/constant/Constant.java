@@ -18,4 +18,9 @@ public class Constant {
      */
     public static final String BAIDU_TTS_APP_Key = "iKhLD63gAv0pCbmDnGmlG2bq";
 
+    /**
+     * 腾旭Bugly AppId
+     */
+    public static final String BUGLY_APP_ID = "152ae015b0";
+
 }
